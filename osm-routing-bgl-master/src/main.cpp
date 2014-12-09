@@ -15,7 +15,7 @@ typedef osmium::handler::NodeLocationsForWays<index_type> location_handler_type;
 int main(int argc, char* argv[])
 {
     // Print usage
-    if (argc != 2)
+    if (argc != 6)
     {
         std::cerr << "Usage: " << argv[0] << " OSMFILE\n";
         exit(1);
@@ -39,15 +39,15 @@ int main(int argc, char* argv[])
 
     double start1, start2, end1, end2;
 
-//    start1 = atof(argv[2]);
-//    start2 = atof(argv[3]);
-//    end1 = atof(argv[4]);
-//    end2 = atof(argv[5]);
+    start1 = atof(argv[2]);
+    start2 = atof(argv[3]);
+    end1 = atof(argv[4]);
+    end2 = atof(argv[5]);
 //    std::cout << start1;
-    std::cin >> start1;
-    std::cin >> start2;
-    std::cin >> end1;
-    std::cin >> end2;
+//    std::cin >> start1;
+//    std::cin >> start2;
+//    std::cin >> end1;
+//    std::cin >> end2;
 
 //    osmium::Location start(21.5772, 47.5972);
 //    osmium::Location dest(21.663412, 47.54988);
