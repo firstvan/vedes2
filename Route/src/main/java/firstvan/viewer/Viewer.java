@@ -117,7 +117,7 @@ public class Viewer
 		
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			
-			String cmd = "./../osm-routing-bgl-master/dist/osm-routing-bgl";// ../debrecen.osm "+p1.getLatitude() + " " + p1.getLongitude() + " "+p2.getLatitude()+" "+p2.getLatitude();
+			String cmd = "./../osm-routing-bgl/dist/osm-routing-bgl";// ../debrecen.osm "+p1.getLatitude() + " " + p1.getLongitude() + " "+p2.getLatitude()+" "+p2.getLatitude();
 			
 			CommandLine cmdLine = CommandLine.parse(cmd);
 			cmdLine.addArgument("../debrecen.osm");
@@ -135,26 +135,31 @@ public class Viewer
 			
 			
 			String kiir = outputStream.toString();
-			
 			String[] ki = kiir.split("\n");
-			
-			csm.clear();
-			
-			for(String a : ki )
-			{
-				String[] temp = a.split(" ");
-				double tempLat=Double.parseDouble(temp[0]);
-				double tempLong=Double.parseDouble(temp[1]);
-				csm.add(new GeoPosition(tempLat, tempLong));
+			if(ki[0].equals("Route not found")){
+				System.out.println(kiir);
 			}
+			else{
+			
+			
+				csm.clear();
+			
+				for(String a : ki )
+				{
+					String[] temp = a.split(" ");
+					double tempLat=Double.parseDouble(temp[0]);
+					double tempLong=Double.parseDouble(temp[1]);
+					csm.add(new GeoPosition(tempLat, tempLong));
+				}
 			
 			
 			
 	  
-			wayPoints.clear();
-		  wayPoints.add(new DefaultWaypoint(csm.get(0)));
-		  wayPoints.add(new DefaultWaypoint(csm.get(csm.size()-1)));
-		  draw();
+				wayPoints.clear();
+		  		wayPoints.add(new DefaultWaypoint(csm.get(0)));
+		  		wayPoints.add(new DefaultWaypoint(csm.get(csm.size()-1)));
+		  		draw();
+			}
 	  }
 	  catch(FileNotFoundException e) {System.out.println (e);
 	  }
@@ -190,7 +195,7 @@ public class Viewer
 		  public void mouseClicked(MouseEvent e)
 		  {
 
-			  JXMapViewer map = jmk.getMainMap();
+			  /*JXMapViewer map = jmk.getMainMap();
 			  
 			  Point2D m = e.getPoint();
                 // convert to geo
@@ -200,7 +205,8 @@ public class Viewer
                 
                 Point2D m1 = new Point(sx, sy);
                 
-			  GeoPosition click1 = map.getTileFactory().pixelToGeo(m1, map.getZoom());
+			  GeoPosition click1 = map.getTileFactory().pixelToGeo(m1, map.getZoom());*/
+			  GeoPosition click1 = jmk.getMainMap().convertPointToGeoPosition(e.getPoint());
 			  if(e.getButton() == e.BUTTON1)
 				  savePoint(1, click1);
 			  else if(e.getButton() == e.BUTTON3)
