@@ -1,21 +1,15 @@
 package firstvan.viewer;
 
+import java.awt.BorderLayout;
 import java.util.List;
-import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.swing.JFrame;
-import javax.swing.JToolTip;
-import javax.swing.JOptionPane;
 
-import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.geom.Point2D;
-import java.awt.Point; 
-import java.awt.Rectangle;
 
 import org.jxmapviewer.JXMapKit;
 import org.jxmapviewer.JXMapViewer;
@@ -29,21 +23,15 @@ import org.jxmapviewer.painter.CompoundPainter;
 import org.jxmapviewer.painter.Painter;
 import org.jxmapviewer.viewer.DefaultWaypoint;
 
-import java.net.URISyntaxException;
 import java.io.FileNotFoundException;
-import java.lang.Runtime;
-import java.lang.Process;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.File;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.InputStream;
 
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.PumpStreamHandler;
 import java.io.ByteArrayOutputStream;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 
 
@@ -51,11 +39,12 @@ import java.io.ByteArrayOutputStream;
 public class Viewer
 {
 	final static private JXMapKit jmk = new JXMapKit();
-	static private List<GeoPosition> csm = new ArrayList<GeoPosition>();
-	static private Set<Waypoint> wayPoints = new HashSet<Waypoint>();
+	final static private List<GeoPosition> csm = new ArrayList<>();
+	final static private Set<Waypoint> wayPoints = new HashSet<>();
 	static private javax.swing.JButton startButton;
 	static GeoPosition p1 = new GeoPosition(0, 0);
 	static GeoPosition p2 = new GeoPosition(0, 0);	
+	static JFrame frame = new JFrame("Route");
 	
 	public static void savePoint(int i, GeoPosition gp)
 	{
@@ -74,7 +63,8 @@ public class Viewer
 	public static void frissit()
 	{
 
-		Set<Waypoint> waypoints = new HashSet<Waypoint>();
+		Set<Waypoint> waypoints;
+		waypoints = new HashSet<>();
 				
 		if(p1 != new GeoPosition(0, 0)){
 			waypoints.add(new DefaultWaypoint(p1));
@@ -83,31 +73,29 @@ public class Viewer
 			waypoints.add(new DefaultWaypoint(p2));
 		}
 				
-		WaypointPainter<Waypoint> waypointPainter  = new WaypointPainter<Waypoint>();
+		WaypointPainter<Waypoint> waypointPainter  = new WaypointPainter<>();
 		waypointPainter.setWaypoints(waypoints);
 		
-		List<Painter<JXMapViewer>> painters = new ArrayList<Painter<JXMapViewer>>();
+		List<Painter<JXMapViewer>> painters;
+		painters = new ArrayList<>();
 		painters.add(waypointPainter);
 		
-		CompoundPainter<JXMapViewer> painter = new CompoundPainter<JXMapViewer>(painters);
+		CompoundPainter<JXMapViewer> painter = new CompoundPainter<>(painters);
 		jmk.getMainMap().setOverlayPainter(painter);	
 	}
 	
-	
-	
-	
-	
 	public static void draw(){
-		WaypointPainter<Waypoint> waypointPainter = new WaypointPainter<Waypoint>();
+		WaypointPainter<Waypoint> waypointPainter = new WaypointPainter<>();
 		  waypointPainter.setWaypoints(wayPoints);
 			  
 		  RoutePainter routePainter = new RoutePainter(csm); 
 			
-		  List<Painter<JXMapViewer>> painters = new ArrayList<Painter<JXMapViewer>>();
+		  List<Painter<JXMapViewer>> painters;
+		  painters = new ArrayList<>();
 		  painters.add(routePainter);
 		  painters.add(waypointPainter);
 			
-		  CompoundPainter<JXMapViewer> painter = new CompoundPainter<JXMapViewer>(painters);
+		  CompoundPainter<JXMapViewer> painter = new CompoundPainter<>(painters);
 		  jmk.getMainMap().setOverlayPainter(painter);	 
 		
 	}
@@ -137,7 +125,7 @@ public class Viewer
 			String kiir = outputStream.toString();
 			String[] ki = kiir.split("\n");
 			if(ki[0].equals("Route not found")){
-				System.out.println(kiir);
+				JOptionPane.showMessageDialog(frame, kiir);
 			}
 			else{
 			
@@ -173,6 +161,7 @@ public class Viewer
       startButton = new javax.swing.JButton();
 	  startButton.setText("Indít");
 	  startButton.addActionListener(new java.awt.event.ActionListener(){
+		  @Override
 		  public void actionPerformed(java.awt.event.ActionEvent evn){
 			  startB();
 		  }
@@ -181,90 +170,63 @@ public class Viewer
       
       
       
-      TileFactoryInfo info = new OSMTileFactoryInfo();
-	  DefaultTileFactory dinfo = new DefaultTileFactory(info);
-	  jmk.setTileFactory(dinfo);
+        TileFactoryInfo info = new OSMTileFactoryInfo();
+	DefaultTileFactory dinfo = new DefaultTileFactory(info);
+	jmk.setTileFactory(dinfo);
 	 
 	  
-	  jmk.setZoom(5);
-	  jmk.setAddressLocation(new GeoPosition(47.532130, 21.624180));
-	  jmk.setAddressLocationShown(false);
+	jmk.setZoom(5);
+	jmk.setAddressLocation(new GeoPosition(47.532130, 21.624180));
+	jmk.setAddressLocationShown(false);
 	  
-	  jmk.getMainMap().addMouseListener(new MouseListener(){
+	jmk.getMainMap().addMouseListener(new MouseListener(){
 		  @Override
 		  public void mouseClicked(MouseEvent e)
 		  {
 
-			  /*JXMapViewer map = jmk.getMainMap();
-			  
-			  Point2D m = e.getPoint();
-                // convert to geo
-                Rectangle rect = map.getViewportBounds();
-                int sx = (int) m.getX() + rect.x;
-                int sy = (int) m.getY() + rect.y;
-                
-                Point2D m1 = new Point(sx, sy);
-                
-			  GeoPosition click1 = map.getTileFactory().pixelToGeo(m1, map.getZoom());*/
 			  GeoPosition click1 = jmk.getMainMap().convertPointToGeoPosition(e.getPoint());
-			  if(e.getButton() == e.BUTTON1)
+			  if(e.getButton() == MouseEvent.BUTTON1)
 				  savePoint(1, click1);
-			  else if(e.getButton() == e.BUTTON3)
+			  else if(e.getButton() == MouseEvent.BUTTON3)
 				  savePoint(2, click1);
-			  
-			  if(e.getButton() == e.BUTTON2)
-				  draw();
 		  }
 		  
+		  @Override
 		  public void mouseExited(MouseEvent e)
 		  {
 			  //pass
 		  }
 
+		  @Override
 		  public void mouseEntered(MouseEvent e)
 		  {
 			  //pass
 		  }
 
+		  @Override
 		  public void mousePressed(MouseEvent e)
 		  {
 			  //pass
 		  }
 
+		  @Override
 		  public void mouseReleased(MouseEvent e)
 		  {
 			  //pass
 		  }
-	  });
-	  
-	  
-	  /*
-		  Reader r = new Reader();
-		  csm = r.getArray();
-	  
-	  
-		  wayPoints.add(new DefaultWaypoint(r.starts()));
-		  wayPoints.add(new DefaultWaypoint(r.last()));
-		  
-		  
-	  }
-	  catch(FileNotFoundException e) {System.out.println (e);
-	  }
-	  catch(URISyntaxException e) {System.out.println (e);
-	  }
-	  */
-	  //draw();
-	  
-	  JFrame frame = new JFrame("Route");
-	  startButton.setBounds(0, 0, 100, 50);
-
+	});
 	  
 
-	  frame.getContentPane().add(startButton);
-	  frame.getContentPane().add(jmk);
-	  frame.setSize(1280, 720);
-	  frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	  frame.setVisible(true);	
+
+	  
+	frame.setLayout(new BorderLayout());	  
+	
+	frame.add(startButton, BorderLayout.NORTH);
+	frame.add(jmk);
+
+	frame.setSize(1280, 720);
+	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	frame.setVisible(true);	
 	  
 	  
   }
