@@ -101,11 +101,15 @@ public class Viewer
 	}
 	
 	public static void startB() {
-		try{
 		
+	if((p1.getLatitude() == 0 && p1.getLongitude() == 0) || (p2.getLatitude() == 0 && p2.getLongitude() == 0)){
+		JOptionPane.showMessageDialog(frame, "Please add start and end point");	
+	}
+		else{
+		try{
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			
-			String cmd = "./../osm-routing-bgl/dist/osm-routing-bgl";// ../debrecen.osm "+p1.getLatitude() + " " + p1.getLongitude() + " "+p2.getLatitude()+" "+p2.getLatitude();
+			String cmd = "./../osm-routing-bgl/dist/osm-routing-bgl";
 			
 			CommandLine cmdLine = CommandLine.parse(cmd);
 			cmdLine.addArgument("../debrecen.osm");
@@ -153,6 +157,8 @@ public class Viewer
 	  }
 	  catch(IOException e) {System.out.println (e);
 	  }
+		
+	}
 	}
 	
 	
