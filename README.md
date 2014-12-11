@@ -16,8 +16,8 @@ Then in Route directory:
  
 ### Build
 
-mvn clean compile package assembly:single
+	$ mvn clean compile package assembly:single
 
 ### Run
 
-java -jar target/firstvan-0.0.1-jar-with-dependencies.jar
+	$ java -jar target/firstvan-0.0.1-jar-with-dependencies.jar
